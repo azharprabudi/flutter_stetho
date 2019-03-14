@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_stetho/src/http_client_request.dart';
@@ -138,6 +139,7 @@ class StethoHttpClient implements HttpClient {
             headers: headersToMap(request.headers),
             method: request.method,
             id: wrapped.id,
+            body: wrapped.data,
           ),
         );
       });

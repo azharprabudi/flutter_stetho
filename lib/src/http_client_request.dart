@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_stetho/src/http_client_response.dart';
 import 'package:flutter_stetho/src/inspector_response.dart';
 import 'package:flutter_stetho/src/method_channel_controller.dart';
@@ -10,6 +11,9 @@ import 'package:flutter_stetho/src/utils.dart';
 class StethoHttpClientRequest implements HttpClientRequest {
   final HttpClientRequest request;
   final String id;
+
+  // internal used
+  List<int> _data;
 
   @override
   bool bufferOutput;
@@ -29,6 +33,8 @@ class StethoHttpClientRequest implements HttpClientRequest {
   @override
   bool persistentConnection;
 
+  List<int> get data => this._data;
+
   StethoHttpClientRequest(
     this.request,
     this.id,
@@ -42,6 +48,7 @@ class StethoHttpClientRequest implements HttpClientRequest {
 
   @override
   void add(List<int> data) {
+    this._data = data;
     request.add(data);
   }
 

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_stetho/flutter_stetho.dart';
 import 'package:http/http.dart' as http;
@@ -7,13 +10,15 @@ void main() {
 
   runApp(new FlutterStethoExample(
     client: new http.Client(),
+    client2: new HttpClient(),
   ));
 }
 
 class FlutterStethoExample extends StatelessWidget {
   final http.Client client;
+  final HttpClient client2;
 
-  FlutterStethoExample({Key key, this.client}) : super(key: key);
+  FlutterStethoExample({Key key, this.client, this.client2}) : super(key: key);
 
   fetchImage() {
     client.get(
@@ -22,11 +27,15 @@ class FlutterStethoExample extends StatelessWidget {
     );
   }
 
-  fetchJson() {
-    client.get(
-      'https://jsonplaceholder.typicode.com/posts/1',
-      headers: {'Authorization': 'token'},
-    );
+  fetchJson() async {
+    HttpClientRequest req = await client2.openUrl(
+        "POST", Uri.parse("https://jsonplaceholder.typicode.com/posts"));
+    req.add(utf8.encode(json.encode({"name": "kondel"})));
+
+    HttpClientResponse res = await req.close();
+    // todo - you should check the response.statusCode
+    String reply = await res.transform(utf8.decoder).join();
+    client2.close();
   }
 
   fetchError() {
